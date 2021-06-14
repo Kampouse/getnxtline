@@ -5,6 +5,66 @@
 #include <fcntl.h>
    
 #include <stdio.h>
+size_t	ft_strlen(const char *str)
+{
+	size_t		len;
+
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*str;
+	size_t	i;
+	size_t	j;
+
+	str = (char*)malloc(
+		sizeof(*s1) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i])
+	{
+		str[j++] = s1[i];
+		i++;
+	}
+	i = 0;
+	while (s2[i])
+	{
+		str[j++] = s2[i];
+		i++;
+	}
+	str[j] = 0;
+	return (str);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	size_t	i;
+	size_t	j;
+	char	*str;
+
+	str = (char*)malloc(sizeof(*s) * (len + 1));
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (i >= start && j < len)
+		{
+			str[j] = s[i];
+			j++;
+		}
+		i++;
+	}
+	str[j] = 0;
+	return (str);
+}
 
 
 char    *ft_strchr(const char *str, int compared)
@@ -25,42 +85,57 @@ char    *ft_strchr(const char *str, int compared)
 	return (NULL);
 }
 
-int find_newline(char *temp,char **line)
+char *find_newline(char *temp)
 {
   int inc; 
-  inc = 0;
+  char *output;
+	  inc = 0;
   while(temp[inc] && temp[inc] !='\n')
   {
-   printf("%c",temp[inc]); 
     inc++;
   }
+ 	output = ft_substr(temp,0,inc);
+	free(temp);
+	return(output);
   //i think there will neade to be a conditional when it find a \n vs being full;
-return (inc);
 }
-int get_next_line(int fd, char **line)
+int get_next_line(int fd)
 {
 int BUFFER_SIZE = 32;
-char    *temp;
-int     status;
-int     lenght;
+char			*temp;
+char			*tempb;
+unsigned int     readsize;
+static char 	*storage;
+temp = malloc(sizeof(char) * BUFFER_SIZE);
 
-temp = malloc(sizeof(BUFFER_SIZE) * 32);
-status = read(fd,temp,BUFFER_SIZE);
-//read return the number of elem it was able to read
- lenght = find_newline(temp,line);
- printf("%d",lenght);
-return (status);
+readsize = read(fd,temp,BUFFER_SIZE);
+if(readsize > 0)
+{
+ tempb = find_newline(temp);
+}
+else
+	return(0);
+
+ if(!storage && readsize > 0) 
+	 storage = tempb;
+ 	else 
+  		storage = ft_strjoin(storage,tempb);
+ printf("%s",storage);
+ printf("%lu",ft_strlen(storage));
+return (readsize);
 }
    int main(int argc,char* argv[])
 {
-static char  *val;
-char  *buffer;
-char **lines;
 int file_location;
 int status;
+status = 0;
 argc = 0;
 	file_location = open(argv[1],O_RDONLY );
-     status =  get_next_line(file_location,lines);
+	
+     while(get_next_line(file_location) > 0)
+	 {
+		 printf("%d \n",status++);
+	 }
 
 	//read the element until  your find a newline or a you fill the buffre 
 	//which will be deleted on each round this memory will then be put on a static buffer(persistant between each call;
