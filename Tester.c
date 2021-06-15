@@ -85,46 +85,33 @@ char    *ft_strchr(const char *str, int compared)
 	return (NULL);
 }
 
-char *find_newline(char *temp)
+int find_newline(char *temp)
 {
-  int inc; 
-  char *output;
-	  inc = 0;
-  while(temp[inc] && temp[inc] !='\n')
-  {
-    inc++;
-  }
- 	output = ft_substr(temp,0,inc);
-	free(temp);
-	return(output);
-  //i think there will neade to be a conditional when it find a \n vs being full;
+char *found;
+int len;
+found = ft_strchr(temp,'\n');
+if(!found)
+	return(temp);
+   len = found - temp; 
+	found = ft_substr(temp,0,len);	
+	printf("%s",found);
+  //it did not find any '\n' in the  seq
+  return (0);
 }
+
+
 int get_next_line(int fd)
 {
 int BUFFER_SIZE = 32;
-char			*temp;
-char			*tempb;
-unsigned int     readsize;
-static char 	*storage;
-temp = malloc(sizeof(char) * BUFFER_SIZE);
-
-readsize = read(fd,temp,BUFFER_SIZE);
-if(readsize > 0)
-{
- tempb = find_newline(temp);
+char			buff[32]; //should addd buff size sometimes if this sitll relevent
+char *temp;
+temp = NULL;
+int val;
+val = read(fd,buff,BUFFER_SIZE);
+temp = find_newline(buff);
+return(val);
 }
-else
-	return(0);
-
- if(!storage && readsize > 0) 
-	 storage = tempb;
- 	else 
-  		storage = ft_strjoin(storage,tempb);
- printf("%s",storage);
- printf("%lu",ft_strlen(storage));
-return (readsize);
-}
-   int main(int argc,char* argv[])
+ int main(int argc,char* argv[])
 {
 int file_location;
 int status;
@@ -132,10 +119,8 @@ status = 0;
 argc = 0;
 	file_location = open(argv[1],O_RDONLY );
 	
-     while(get_next_line(file_location) > 0)
-	 {
-		 printf("%d \n",status++);
-	 }
+  get_next_line(file_location);
+	 
 
 	//read the element until  your find a newline or a you fill the buffre 
 	//which will be deleted on each round this memory will then be put on a static buffer(persistant between each call;
