@@ -38,7 +38,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	}
 	str[j] = 0;
-	free( (void *)s2);
 	return (str);
 }
 
@@ -48,7 +47,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	size_t	j;
 	char	*str;
 
-	str = (char*)malloc(sizeof(*s) * (len + 1));
+	str = malloc(sizeof(*s) * (len + 1));
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -95,7 +94,7 @@ if(!found)
    len = found - temp; 
   return (len);
 }
-char *stringmaker(char *temp,char *container)
+char *stringmaker(char *temp,char *container,int ln)
 {
 	char *str;
 	char *tmp;
@@ -108,13 +107,14 @@ char *stringmaker(char *temp,char *container)
 			if(!str)
 				return (NULL);
 	}
-		str = ft_substr(temp, 0, found);
+		str = ft_substr(temp, ln, found);
 		if(!str)
 			return (NULL);
 	if(container != NULL)
 	{
 		tmp = container;
-		container = ft_strjoin(container, temp);
+		container = ft_strjoin(container,str);
+		free(str);
 		return(container);
 	}
 	return (str);
@@ -124,13 +124,15 @@ int get_next_line(int fd)
 int BUFFER_SIZE = 32;
 char			buff[32]; //should addd buff size sometimes if this sitll relevent
 int val;
+int vog;
 static char *container;
 val = read(fd,buff,BUFFER_SIZE);
 if(!container)
-	container = stringmaker(buff,container);
-	container = stringmaker(container,container);
 
-
+	//i think i gonna make another function here that make something like
+	//list maker;
+	container = stringmaker(buff,container,0);
+container = stringmaker("help",container,0);
 printf("%s",container);
 return(val);
 }
