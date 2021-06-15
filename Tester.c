@@ -21,8 +21,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	i;
 	size_t	j;
 
-	str = (char*)malloc(
-		sizeof(*s1) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	str = malloc(sizeof(*s1) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -39,6 +38,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	}
 	str[j] = 0;
+	free( (void *)s2);
 	return (str);
 }
 
@@ -91,24 +91,47 @@ char *found;
 int len;
 found = ft_strchr(temp,'\n');
 if(!found)
-	return(temp);
+	return(-1);
    len = found - temp; 
-	found = ft_substr(temp,0,len);	
-	printf("%s",found);
-  //it did not find any '\n' in the  seq
-  return (0);
+  return (len);
 }
-
-
+char *stringmaker(char *temp,char *container)
+{
+	char *str;
+	char *tmp;
+	const int found = find_newline(temp);
+ 	if(found == 0)
+		return (NULL);
+	if(found == -1)
+	{
+		str = ft_substr(temp, 0, 32);
+			if(!str)
+				return (NULL);
+	}
+		str = ft_substr(temp, 0, found);
+		if(!str)
+			return (NULL);
+	if(container != NULL)
+	{
+		tmp = container;
+		container = ft_strjoin(container, temp);
+		return(container);
+	}
+	return (str);
+}
 int get_next_line(int fd)
 {
 int BUFFER_SIZE = 32;
 char			buff[32]; //should addd buff size sometimes if this sitll relevent
-char *temp;
-temp = NULL;
 int val;
+static char *container;
 val = read(fd,buff,BUFFER_SIZE);
-temp = find_newline(buff);
+if(!container)
+	container = stringmaker(buff,container);
+	container = stringmaker(container,container);
+
+
+printf("%s",container);
 return(val);
 }
  int main(int argc,char* argv[])
