@@ -84,19 +84,8 @@ char    *ft_strchr(const char *str, int compared)
 	return (NULL);
 }
 
-int find_newline(char *temp)
-{
-char *found;
-int len;
-found = ft_strchr(temp,'\n');
-if(!found)
-	return(-1);
-   len = found - temp; 
-  return (len);
-}
 char *stringmaker(char *temp,int val, int offset)
 {
-	
 	const int fl = ft_strchr(temp,'\n') - temp;
 	if(!ft_strchr(temp,'\n'))
 		return(ft_substr(temp,offset,val));
@@ -107,6 +96,23 @@ char *stringmaker(char *temp,int val, int offset)
 		return (ft_substr(temp,offset , fl));
    return(NULL);
 }
+
+char *ft_rest(char *buffer, char *line, int val)
+{
+	int len;
+
+	if(line)
+		len = ft_strlen(line);
+	else 
+		return(NULL);
+	if(len < val)
+		return(&buffer[len]);
+
+	return(NULL);
+}
+
+
+
 int get_next_line(int fd )
 {
 	int BUFFER_SIZE = 32;
@@ -117,10 +123,9 @@ int get_next_line(int fd )
 val = 0;
 	val = read(fd,buff,BUFFER_SIZE);
 	buff[val] = '\0';
- 	line = stringmaker(buff, val, 0);
- printf("%s",line);
-
- str = &buff[ft_strlen(line)];
+ 	line = stringmaker(buff, val, 0); 
+		str = ft_rest(buff, line, val);
+		printf("%s",str);
 
 return(0);
 }
