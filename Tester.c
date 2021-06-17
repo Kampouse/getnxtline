@@ -94,47 +94,33 @@ if(!found)
    len = found - temp; 
   return (len);
 }
-char *stringmaker(char *temp,char *container,int ln)
+char *stringmaker(char *temp,int val, int offset)
 {
-	char *str;
-	char *tmp;
-	const int found = find_newline(temp);
- 	if(found == 0)
+	
+	const int fl = ft_strchr(temp,'\n') - temp;
+	if(!ft_strchr(temp,'\n'))
+		return(ft_substr(temp,offset,val));
+	printf("%d",fl);
+ 	if(fl  == 0 && !fl)
 		return (NULL);
-	if(found == -1)
-	{
-		str = ft_substr(temp, 0, 32);
-			if(!str)
-				return (NULL);
-	}
-		str = ft_substr(temp, ln, found);
-		if(!str)
-			return (NULL);
-	if(container != NULL)
-	{
-		tmp = container;
-		container = ft_strjoin(container,str);
-		free(str);
-		return(container);
-	}
-	return (str);
+	if(fl  > 0)
+		return (ft_substr(temp,offset , fl));
+   return(NULL);
 }
-int get_next_line(int fd)
+int get_next_line(int fd )
 {
 int BUFFER_SIZE = 32;
 char			buff[32]; //should addd buff size sometimes if this sitll relevent
+char *line;
 int val;
-int vog;
-static char *container;
+val = 0;
 val = read(fd,buff,BUFFER_SIZE);
-if(!container)
-
-	//i think i gonna make another function here that make something like
-	//list maker;
-	container = stringmaker(buff,container,0);
-container = stringmaker("help",container,0);
-printf("%s",container);
-return(val);
+ line= stringmaker(buff, val, 0);
+ val = ft_strlen(line);
+ printf("\n%d",val);
+ line= stringmaker(buff, val, val);
+ printf("%s",line);
+return(0);
 }
  int main(int argc,char* argv[])
 {
