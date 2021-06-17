@@ -109,17 +109,19 @@ char *stringmaker(char *temp,int val, int offset)
 }
 int get_next_line(int fd )
 {
-int BUFFER_SIZE = 32;
-char			buff[32]; //should addd buff size sometimes if this sitll relevent
-char *line;
-int val;
+	int BUFFER_SIZE = 32;
+	char			buff[32]; //should addd buff size sometimes if this sitll relevent
+	char *line;
+	static char *str;
+	int val;
 val = 0;
-val = read(fd,buff,BUFFER_SIZE);
- line= stringmaker(buff, val, 0);
- val = ft_strlen(line);
- printf("\n%d",val);
- line= stringmaker(buff, val, val);
+	val = read(fd,buff,BUFFER_SIZE);
+	buff[val] = '\0';
+ 	line = stringmaker(buff, val, 0);
  printf("%s",line);
+
+ str = &buff[ft_strlen(line)];
+
 return(0);
 }
  int main(int argc,char* argv[])
