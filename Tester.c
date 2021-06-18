@@ -90,9 +90,11 @@ char *stringmaker(char *temp,int val, int offset)
 	if(!ft_strchr(temp,'\n'))
 		return(ft_substr(temp,offset,val));
 	printf("%d",fl);
- 	if(fl  == 0 && !fl)
-		return (NULL);
-	if(fl  > 0)
+ 	if(!fl)
+	{
+		return (temp);
+	}
+	if(fl  >= 0)
 		return (ft_substr(temp,offset , fl));
    return(NULL);
 }
@@ -110,7 +112,22 @@ char *ft_rest(char *buffer, char *line, int val)
 
 	return(NULL);
 }
-
+char *ft_manager(char *container ,char *buff,char *line, int val)
+{
+	int len;
+	char *temp = ft_rest(buff, line, val);
+		if(temp)
+			len = ft_strlen(temp);	
+		else
+			return(buff);
+	if(!container)
+		container = ft_substr(buff,0,len);
+	else
+		 container = ft_strjoin(container, temp);
+		//maybe i could free something here;	
+			
+	return(container);
+}
 
 
 int get_next_line(int fd )
@@ -118,14 +135,16 @@ int get_next_line(int fd )
 	int BUFFER_SIZE = 32;
 	char			buff[32]; //should addd buff size sometimes if this sitll relevent
 	char *line;
-	static char *str;
+	static char *container;
 	int val;
-val = 0;
+	container = NULL;
 	val = read(fd,buff,BUFFER_SIZE);
 	buff[val] = '\0';
  	line = stringmaker(buff, val, 0); 
-		str = ft_rest(buff, line, val);
-		printf("%s",str);
+	container = ft_manager(container, buff, line, val);
+
+		printf("%s\n",container);
+		printf("%s\n",line);
 
 return(0);
 }
